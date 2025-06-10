@@ -232,7 +232,7 @@ public class AuthenticationService {
 
         if (!CollectionUtils.isEmpty(user.getRoles())) {
             for (Role role : user.getRoles()) {
-                stringJoiner.add("ROLE_" + role.getName());
+                stringJoiner.add(role.getName());
             }
         }
         return stringJoiner.toString();

@@ -43,7 +43,7 @@ const AdminLayout = ({ children }) => {
   };
 
   return (
-    <Box className="flex h-screen bg-gray-100">
+    <Box className="flex bg-gray-100">
       <AppBar
         position="fixed"
         className="z-10"
@@ -133,7 +133,7 @@ const AdminLayout = ({ children }) => {
             duration: theme.transitions.duration.leavingScreen,
           }),
         }}
-        className="mt-16"
+        className="mt-16 overflow-y-auto"
       >
         {children}
       </Box>

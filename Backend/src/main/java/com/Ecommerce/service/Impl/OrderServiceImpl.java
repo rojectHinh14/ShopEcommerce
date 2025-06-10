@@ -1,5 +1,6 @@
 package com.Ecommerce.service.Impl;
 
+import com.Ecommerce.dto.PageResponse;
 import com.Ecommerce.dto.request.Order.OrderCreateRequest;
 import com.Ecommerce.dto.request.Order.OrderUpdateRequest;
 import com.Ecommerce.dto.response.Order.OrderResponse;
@@ -138,7 +139,7 @@ public class OrderServiceImpl {
                 payment.setVnpayAmount(vnpayAmount);
                 
                 // Debug logging
-                System.out.println("🔍 Creating VNPay payment:");
+                System.out.println(" Creating VNPay payment:");
                 System.out.println("- Order Number: " + savedOrder.getOrderNumber());
                 System.out.println("- Original amount: " + totalAmount);
                 System.out.println("- VNPay amount: " + vnpayAmount);
@@ -151,7 +152,7 @@ public class OrderServiceImpl {
                 );
 
                 // Debug logging
-                System.out.println("🔍 VNPay Response: " + vnpayResponse);
+                System.out.println(" VNPay Response: " + vnpayResponse);
 
                 if ("00".equals(vnpayResponse.get("code"))) {
                     // Lưu URL và transactionId vào payment
@@ -159,14 +160,14 @@ public class OrderServiceImpl {
                     payment.setTransactionId(vnpayResponse.get("transactionId"));
                     
                     // Debug logging
-                    System.out.println("✅ Payment created:");
+                    System.out.println(" Payment created:");
                     System.out.println("- Transaction ID: " + payment.getTransactionId());
                     System.out.println("- Payment URL: " + payment.getPaymentUrl());
                 } else {
                     throw new BusinessException("Failed to create VNPay payment URL: " + vnpayResponse.get("message"));
                 }
             } catch (Exception e) {
-                System.out.println("❌ VNPay Error: " + e.getMessage());
+                System.out.println(" VNPay Error: " + e.getMessage());
                 e.printStackTrace();
                 throw new BusinessException("Failed to process VNPay payment: " + e.getMessage());
             }
@@ -307,7 +308,7 @@ public class OrderServiceImpl {
         Order updatedOrder = orderRepository.save(order);
         return orderMapper.mapToResponse(updatedOrder);
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     public OrderResponse cancelOrder(Long id) {
         User currentUser = getCurrentUser();
         Order order = orderRepository.findById(id)
@@ -342,7 +343,8 @@ public class OrderServiceImpl {
 
     // Helper method to check if user is admin
     private boolean isAdmin(User user) {
-        return user.getRoles() != null && user.getRoles().equals("ADMIN");
+        return user.getRoles() != null && user.getRoles().stream()
+                .anyMatch(role -> role.getName().equals("ROLE_ADMIN"));
     }
 
     private List<OrderItem> createOrderItems(Order order, List<CartItem> cartItems) {
@@ -381,6 +383,13 @@ public class OrderServiceImpl {
             product.setStockQuantity(product.getStockQuantity() - orderItem.getQuantity());
             productRepository.save(product);
         }
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @Transactional(readOnly = true)
+    public Page<OrderResponse> getAllOrders(Pageable pageable) {
+        Page<Order> orders = orderRepository.findAll(pageable);
+        return orders.map(order -> orderMapper.mapToResponse(order));
     }
 
     private void restoreProductStock(List<OrderItem> orderItems) {

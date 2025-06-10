@@ -1,20 +1,12 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useAuth } from '../hooks/useAuth'
-import { Navigate, useLocation, useNavigate } from 'react-router-dom'
-
+import { Navigate, useLocation } from 'react-router-dom'
 export function ProtectedRoute({ children }) {
     const { auth } = useAuth()
     const location = useLocation()
-    const navigate = useNavigate()
-
-    useEffect(() => {
-      if (!auth.isAuthenticated) {
-        navigate("/login", { state: { from: location }, replace: true })
-      }
-    }, [auth.isAuthenticated, navigate, location])
-
+  
     if (!auth.isAuthenticated) {
-      return null
+      return <Navigate to="/login" state={{ from: location }} replace />
     }
   
     return children

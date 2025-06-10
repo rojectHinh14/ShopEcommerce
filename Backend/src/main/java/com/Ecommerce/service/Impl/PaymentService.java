@@ -152,7 +152,7 @@ public class PaymentService {
         query.append("vnp_SecureHash=").append(vnpSecureHash);
         String paymentUrl = vnPayConfig.getPayUrl() + "?" + query;
 
-        System.out.println("🔍 Created payment URL with params:");
+        System.out.println(" Created payment URL with params:");
         System.out.println("- Order Number: " + orderNumber);
         System.out.println("- Transaction Ref: " + txnRef);
         System.out.println("- Amount: " + amount);
@@ -170,14 +170,14 @@ public class PaymentService {
 
     // Xử lý Return URL và cập nhật isPinned
     public String handleReturnUrl(Map<String, String> params) throws Exception {
-        System.out.println("🔍 VNPay Return URL params: " + params);
+        System.out.println(" VNPay Return URL params: " + params);
         
         String vnpSecureHash = params.remove("vnp_SecureHash");
         params.remove("vnp_SecureHashType");
         String signValue = hashAllFields(params);
 
         if (!signValue.equals(vnpSecureHash)) {
-            System.out.println("❌ Invalid signature");
+            System.out.println(" Invalid signature");
             return "Chữ ký không hợp lệ";
         }
 
@@ -185,7 +185,7 @@ public class PaymentService {
         String vnpOrderInfo = params.get("vnp_OrderInfo");
         String vnpTxnRef = params.get("vnp_TxnRef");
         
-        System.out.println("🔍 Processing payment return:");
+        System.out.println(" Processing payment return:");
         System.out.println("- Response Code: " + vnpResponseCode);
         System.out.println("- Order Info: " + vnpOrderInfo);
         System.out.println("- Transaction Ref: " + vnpTxnRef);
@@ -193,12 +193,12 @@ public class PaymentService {
         // Tìm payment theo transactionId
         Optional<Payment> paymentOpt = paymentRepository.findByTransactionId(vnpTxnRef);
         if (paymentOpt.isEmpty()) {
-            System.out.println("❌ Payment not found for transaction: " + vnpTxnRef);
+            System.out.println(" Payment not found for transaction: " + vnpTxnRef);
             return "Không tìm thấy thông tin thanh toán";
         }
 
         Payment payment = paymentOpt.get();
-        System.out.println("✅ Found payment: " + payment.getId() + " with status: " + payment.getPaymentStatus());
+        System.out.println(" Found payment: " + payment.getId() + " with status: " + payment.getPaymentStatus());
 
         // Cập nhật trạng thái thanh toán nếu giao dịch thành công
         if ("00".equals(vnpResponseCode)) {

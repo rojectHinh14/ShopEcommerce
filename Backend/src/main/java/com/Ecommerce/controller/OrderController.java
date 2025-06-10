@@ -34,6 +34,12 @@ public class OrderController {
         return new ResponseEntity<>(ApiResponse.success(response), HttpStatus.CREATED);
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<ApiResponse<PageResponse<OrderResponse>>> getAllOrders(Pageable pageable) {
+        Page<OrderResponse> orders = orderService.getAllOrders(pageable);
+        PageResponse<OrderResponse> pageResponse = PageResponse.of(orders);
+        return ResponseEntity.ok(ApiResponse.success(pageResponse));
+    }
 
     // Get order by ID (current user's order or admin)
     @GetMapping("/{id}")

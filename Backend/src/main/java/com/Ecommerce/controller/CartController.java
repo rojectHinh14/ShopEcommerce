@@ -9,6 +9,7 @@ import com.Ecommerce.service.Impl.CartServiceImpl;
 import com.nimbusds.jwt.JWTParser;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -45,6 +46,7 @@ public class CartController {
     }
 
     @PostMapping("/items")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<ApiResponse<CartResponse>> addOrUpdateItem(
             HttpServletRequest request,
             @RequestBody CartItemRequest cartItemRequest) {
@@ -55,6 +57,7 @@ public class CartController {
     }
 
     @PutMapping("/items/{itemId}")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<ApiResponse<CartResponse>> updateItemQuantity(
             HttpServletRequest request,
             @PathVariable Long itemId,
@@ -66,6 +69,7 @@ public class CartController {
     }
 
     @DeleteMapping("/items/{itemId}")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<ApiResponse<CartResponse>> removeItem(
             HttpServletRequest request,
             @PathVariable Long itemId) {

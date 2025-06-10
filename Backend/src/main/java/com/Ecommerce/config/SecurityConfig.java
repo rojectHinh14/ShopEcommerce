@@ -23,10 +23,10 @@ import java.util.Arrays;
 public class SecurityConfig {
 
     private final String[] PUBLIC_ENDPOINTS = {
-            "/api/users/register", "/auth/token", "/auth/introspect", "/auth/logout", "/auth/refresh", "/api/orders/**"
-            , "/auth/outbound/authentication" , "/api/v1/products/**" , "/api/categories/**" ,"/api/v1/sellers/**" , "/api/v1/shops", "/api/addresses/**", "/file/**", "/api/v1/payment/**"
+            "/api/users/register" ,"/auth/introspect", "/auth/token" ,"/api/v1/products/**" ,"/auth/logout" ,"/api/categories/**" , "/file/**"
     };
-
+//   "/auth/refresh", "/api/orders/**"
+//            , "/auth/outbound/authentication" , "/api/v1/products/**" ,  ,"/api/v1/sellers/**" , "/api/v1/shops", "/api/addresses/**", , "/api/v1/payment/**"
     @Autowired
     private CustomJwtDecoder customJwtDecoder;
 

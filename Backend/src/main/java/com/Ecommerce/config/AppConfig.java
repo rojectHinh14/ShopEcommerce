@@ -9,6 +9,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -24,45 +25,44 @@ import java.util.Set;
 @Slf4j
 public class AppConfig {
 
+    @Autowired
     PasswordEncoder passwordEncoder;
 
-    static final String ADMIN_USER_NAME = "admin";
+    static final String ADMIN_USER_NAME = "admin@gmail.com";
     static final String ADMIN_PASSWORD = "admin";
 
     @Bean
-    @ConditionalOnProperty(
-            prefix = "spring",
-            value = "datasource.driverClassName",
-            havingValue = "com.mysql.cj.jdbc.Driver")
     ApplicationRunner applicationRunner(UserRepository userRepository, RoleRepository roleRepository) {
         return args -> {
             if (userRepository.findByUsername(ADMIN_USER_NAME).isEmpty()) {
 
-                // Tạo Role USER
-                Role userRole = new Role();
-                userRole.setName(PredefinedRole.USER_ROLE);
-                userRole.setDescription("User role");
-                roleRepository.save(userRole);
+                Role userRole = roleRepository.findByName(PredefinedRole.USER_ROLE)
+                        .orElseGet(() -> {
+                            Role newUserRole = new Role();
+                            newUserRole.setName(PredefinedRole.USER_ROLE);
+                            newUserRole.setDescription("User role");
+                            return roleRepository.save(newUserRole);
+                        });
 
-                // Tạo Role ADMIN
-                Role adminRole = new Role();
-                adminRole.setName(PredefinedRole.ADMIN_ROLE);
-                adminRole.setDescription("Admin role");
-                roleRepository.save(adminRole);
+                Role adminRole = roleRepository.findByName(PredefinedRole.ADMIN_ROLE)
+                        .orElseGet(() -> {
+                            Role newAdminRole = new Role();
+                            newAdminRole.setName(PredefinedRole.ADMIN_ROLE);
+                            newAdminRole.setDescription("Admin role");
+                            return roleRepository.save(newAdminRole);
+                        });
 
-                // Gán role ADMIN cho user admin
                 Set<Role> roles = new HashSet<>();
                 roles.add(adminRole);
 
-                // Tạo user admin
-                User user = new User();
-                user.setUsername(ADMIN_USER_NAME);
-                user.setPassword(passwordEncoder.encode(ADMIN_PASSWORD));
-                user.setRoles(roles);
+                User adminUser = new User();
+                adminUser.setUsername(ADMIN_USER_NAME);
+                adminUser.setEmail("admin@email.com");
+                adminUser.setPassword(passwordEncoder.encode(ADMIN_PASSWORD));
+                adminUser.setRoles(roles);
 
-                userRepository.save(user);
+                userRepository.save(adminUser);
 
             }
         };
-    }
-}
+    }}

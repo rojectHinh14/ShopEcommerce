@@ -15,6 +15,7 @@ import OrderDetailPage from "./pages/OrderDetailPage"
 import ProfilePage from "./pages/ProfilePage"
 import { useEffect } from "react"
 import { ProtectedRoute } from "./components/ProtectedRoute"
+import { AdminRoute } from "./components/AdminRoute"
 import { useDispatch } from "react-redux"
 import { restoreAuth } from "./store/slices/userSlice"
 import Orders from './pages/Orders'
@@ -33,12 +34,10 @@ function App() {
 
   return (
     <Providers>
-
-
       <Router>
-        <div className="min-h-screen bg-background font-sans antialiased">
+        <div className="flex flex-col min-h-screen bg-background font-sans antialiased">
           <Header />
-          <main>
+          <main className="flex-grow">
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/men" element={<div>Trang Nam</div>} />
@@ -61,10 +60,10 @@ function App() {
               <Route path="/products/:id" element={<ProductDetailPage />} />
               <Route path="/order-success/:orderId" element={<OrderSuccessPage />} />
               <Route path="/orders/:id" element={<ProtectedRoute><OrderDetailPage /></ProtectedRoute>} />
-              <Route path="/admin/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-              <Route path="/admin/users" element={<ProtectedRoute><ManageUsers /></ProtectedRoute>} />
-              <Route path="/admin/orders" element={<ProtectedRoute><ManageOrders /></ProtectedRoute>} />
-              <Route path="/admin/products" element={<ProtectedRoute><ManageProducts /></ProtectedRoute>} />
+              <Route path="/admin/dashboard" element={<AdminRoute><Dashboard /></AdminRoute>} />
+              <Route path="/admin/users" element={<AdminRoute><ManageUsers /></AdminRoute>} />
+              <Route path="/admin/orders" element={<AdminRoute><ManageOrders /></AdminRoute>} />
+              <Route path="/admin/products" element={<AdminRoute><ManageProducts /></AdminRoute>} />
             </Routes>
           </main>
           <Footer />

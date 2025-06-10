@@ -52,10 +52,10 @@ export const userService = {
     const response = await api.get('/api/addresses/my-addresses');
     const raw = response.data;
   
-    console.log("📦 Raw address API response:", raw);
+    console.log("Raw address API response:", raw);
   
     if (!raw || !Array.isArray(raw.data)) {
-      console.error("❌ Dữ liệu trả về không đúng định dạng:", raw);
+      console.error(" Dữ liệu trả về không đúng định dạng:", raw);
       return [];
     }
   

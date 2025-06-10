@@ -5,6 +5,8 @@
     import com.Ecommerce.dto.response.Address.AddressResponse;
     import com.Ecommerce.service.Impl.AddressServiceImpl;
     import org.springframework.http.ResponseEntity;
+    import org.springframework.security.access.prepost.PreAuthorize;
+    import org.springframework.security.core.Authentication;
     import org.springframework.security.core.context.SecurityContextHolder;
     import org.springframework.security.core.userdetails.UserDetails;
     import org.springframework.web.bind.annotation.*;
@@ -25,11 +27,17 @@
         }
 
         @PostMapping
+        @PreAuthorize("hasRole('USER')")
         public ResponseEntity<ApiResponse<AddressResponse>> createAddress(
                 @RequestBody AddressCreateRequest request) {
 
             Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             String currentUsername;
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            System.out.println("Principal: " + authentication.getPrincipal());
+            System.out.println("Authorities: " + authentication.getAuthorities());
+
+
 
             if (principal instanceof UserDetails) {
                 currentUsername = ((UserDetails) principal).getUsername();
@@ -45,6 +53,7 @@
         }
 
         @PutMapping("/{addressId}")
+        @PreAuthorize("hasRole('USER')")
         public ResponseEntity<ApiResponse<AddressResponse>> updateAddress(
                 @PathVariable Long addressId,
                 @RequestBody AddressUpdateRequest request) {
@@ -68,6 +77,7 @@
 
         // Lấy tất cả địa chỉ của người dùng
         @GetMapping("/my-addresses")
+        @PreAuthorize("hasRole('USER')")
         public ResponseEntity<ApiResponse<List<AddressResponse>>> getUserAddresses() {
             Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             String currentUsername;
@@ -86,6 +96,7 @@
         }
 
         @DeleteMapping("/{addressId}")
+        @PreAuthorize("hasRole('USER')")
         public ResponseEntity<ApiResponse<Void>> deleteAddress(@PathVariable Long addressId) {
             Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             String currentUsername;

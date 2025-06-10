@@ -13,6 +13,7 @@ import com.Ecommerce.repository.UserProfileRepository;
 import com.Ecommerce.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import com.Ecommerce.exception.UnauthorizedException;
@@ -125,6 +126,7 @@ public class UserServiceImpl  implements UserService {
     }
 
     @Override
+    @PreAuthorize("hasRole('USER')")
     public void deleteUser(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
@@ -223,7 +225,6 @@ public class UserServiceImpl  implements UserService {
             String fileName = saveFileToFolder(userEntity.getUsername(), userEntity.getId(), fileExtension, decodedBytes);
             String pathAvatarSaveDb = avatarRelativePath + fileName;
 
-            // ✅ GÁN CHÍNH XÁC VÀO UserProfile
             profile.setAvatarUrl(pathAvatarSaveDb);
         }
     }

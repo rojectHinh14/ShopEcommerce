@@ -1,5 +1,6 @@
 package com.Ecommerce.service;
 
+import com.Ecommerce.dto.request.AdminUpdateUserRequest;
 import com.Ecommerce.dto.request.ChangePasswordRequest;
 import com.Ecommerce.dto.request.LoginRequest;
 import com.Ecommerce.dto.request.UpdateProfileRequest;
@@ -19,4 +20,7 @@ public interface UserService {
     void changePassword(ChangePasswordRequest request);
     UserResponse updateProfile(UpdateProfileRequest request);
     UserResponse getCurrentUserProfile();
+    
+    // Admin update user
+    UserResponse updateAdminUser(Long id, AdminUpdateUserRequest request);
 }

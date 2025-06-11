@@ -30,7 +30,11 @@ public class UserMapper {
         response.setFirstName(user.getFirstName());
         response.setDob(user.getDob());
 
-        // ✅ Map avatar từ UserProfile nếu có
+        if(user.getActive() != null){
+            response.setActive(user.getActive());
+        }
+
+        //  Map avatar từ UserProfile nếu có
         if (user.getProfile() != null && user.getProfile().getAvatarUrl() != null) {
             response.setPathAvatar(user.getProfile().getAvatarUrl());
         }

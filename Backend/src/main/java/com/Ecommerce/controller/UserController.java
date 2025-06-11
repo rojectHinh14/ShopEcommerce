@@ -49,7 +49,7 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success(userResponse));
     }
 
-    // Lấy danh sách user phân trang
+    // Lấy danh sách user phân trang(just admin)
     @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<UserResponse>>> getAllUsers(Pageable pageable) {
         Page<UserResponse> page = userService.getAllUsers(pageable);
@@ -92,7 +92,7 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success(updatedUser, "User updated successfully"));
     }
 
-    // Xóa user (soft delete)
+    // Xóa user (soft delete) (just admin)
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);

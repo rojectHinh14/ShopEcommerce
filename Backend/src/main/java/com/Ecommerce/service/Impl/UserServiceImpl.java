@@ -30,6 +30,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Base64;
+import java.util.HashSet;
 import java.util.Set;
 
 @Service
@@ -91,9 +92,10 @@ public class UserServiceImpl  implements UserService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional(readOnly = true)
     public Page<UserResponse> getAllUsers(Pageable pageable) {
-        return userRepository.findAllActiveUsers(pageable)
+        return userRepository.findAll(pageable)
                 .map(userMapper::mapToUserResponse);
     }
 
@@ -125,8 +127,27 @@ public class UserServiceImpl  implements UserService {
         return userMapper.mapToUserResponse(user);
     }
 
+    public UserResponse UpdateAdmin(Long id, AdminUpdateUserRequest request){
+        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+        if(request.getActive() != null){
+            user.setIsActive(request.getActive());
+        }
+
+        Set<Role> newRole = new HashSet<>();
+        if(request.getRoles() != null){
+            for(Role role : request.getRoles()){
+                Role roleFound = roleRepository.findByName(role.getName()).orElseThrow(() -> new RuntimeException("Role not found"));
+                newRole.add(roleFound);
+            }
+
+            user.setRoles(newRole);
+        }
+        userRepository.save(user);
+        return userMapper.mapToUserResponse(user);
+    }
+
     @Override
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteUser(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
@@ -249,6 +270,26 @@ public class UserServiceImpl  implements UserService {
         return fileName;
     }
 
+    @Override
+    @PreAuthorize("hasRole('ADMIN')")
+    public UserResponse updateAdminUser(Long id, AdminUpdateUserRequest request) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
 
+        // Update status
+        user.setIsActive(request.getActive());
+
+        // Update roles
+        Set<Role> newRoles = new HashSet<>();
+        for (Role roleName : request.getRoles()) {
+            Role role = roleRepository.findByName(roleName.getName())
+                    .orElseThrow(() -> new ResourceNotFoundException("Role not found: " + roleName));
+            newRoles.add(role);
+        }
+        user.setRoles(newRoles);
+
+        user = userRepository.save(user);
+        return userMapper.mapToUserResponse(user);
+    }
 
 }

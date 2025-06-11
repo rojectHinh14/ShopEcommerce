@@ -4,9 +4,17 @@ const API_URL = 'http://localhost:8080'; // URL của backend
 
 const api = axios.create({
     baseURL: API_URL,
-    headers:{
-        'Content-Type' : 'application/json',
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
     },
+    transformRequest: [(data, headers) => {
+        // Remove charset from Content-Type if present
+        if (headers['Content-Type'] && headers['Content-Type'].includes('charset')) {
+            headers['Content-Type'] = 'application/json';
+        }
+        return JSON.stringify(data);
+    }]
 });
 
 api.interceptors.request.use(

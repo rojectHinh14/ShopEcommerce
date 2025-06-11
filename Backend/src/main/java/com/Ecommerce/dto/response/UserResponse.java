@@ -22,6 +22,16 @@ public class UserResponse {
     LocalDate dob;
     String pathAvatar;
 
+    private boolean active;
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
     String file;
     public UserResponse() {}
 

@@ -197,5 +197,37 @@ export const userService = {
   removeFromWishlist: async (productId) => {
     const response = await api.delete(`${API_URL}/me/wishlist/${productId}`);
     return response.data;
-  }
+   },
+
+  // Admin User Management
+  getAllUsers: async (page = 0, size = 10) => {
+    const response = await api.get(`/api/v1/users/admin?page=${page}&size=${size}`);
+    return response.data;
+  },
+
+  searchUsers: async (keyword, page = 0, size = 10) => {
+    const response = await api.get(`/api/v1/users/admin/search?keyword=${keyword}&page=${page}&size=${size}`);
+    return response.data;
+  },
+
+  updateUser: async (userId, userData) => {
+    console.log('userService.updateUser called with:', { userId, userData });
+    try {
+      const response = await api.put(`/api/v1/users/admin/${userId}`, userData, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      console.log('userService.updateUser response:', response);
+      return response.data;
+    } catch (error) {
+      console.error('userService.updateUser error:', error);
+      throw error;
+    }
+  },
+
+  deleteUser: async (userId) => {
+    const response = await api.delete(`/api/v1/users/admin/${userId}`);
+    return response.data;
+  },
 }; 

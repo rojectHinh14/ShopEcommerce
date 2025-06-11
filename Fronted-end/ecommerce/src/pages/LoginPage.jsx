@@ -14,7 +14,7 @@ import { useAuth } from "../hooks/useAuth"
 import { toast } from "react-toastify"
 
 const loginSchema = Yup.object({
-  // email: Yup.string().email("Email không hợp lệ").required("Email là bắt buộc"),
+  email: Yup.string().email("Email không hợp lệ").required("Email là bắt buộc"),
   password: Yup.string().min(4, "Mật khẩu phải có ít nhất 4 ký tự").required("Mật khẩu là bắt buộc"),
 })
 
